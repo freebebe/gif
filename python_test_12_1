@@ -1,0 +1,359 @@
+ 12-1 蓝色天空 ： 创建一个背景为蓝色的Pygame窗口。
+12-2 游戏角色 ： 找一幅你喜欢的游戏角色位图图像或将一幅图像转换为位图。 创建一个类， 将该角色绘制到屏幕中央， 并将该图像的背景色设置为屏幕背景色， 或将
+屏幕背景色设置为该图像的背景色。
+12-1
+
+复制代码
+import sys
+import pygame
+def run():
+    # 初始化游戏并创建一个屏幕对象
+    pygame.init()
+    screen = pygame.display.set_mode((800, 600))
+    pygame.display.set_caption("Blue Sky")
+    # 设置背景色
+    bg_color = (0, 124, 195)
+    while True:
+        screen.fill(bg_color)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+        pygame.display.flip()
+run()
+复制代码
+输出：
+
+
+
+ 
+
+ 
+
+12-2
+
+ship.py
+
+复制代码
+import pygame  
+  
+class Ship():  
+    """docstring for Ship"""  
+    def __init__(self, screen):  
+        """初始化飞船并设置其初始位置"""  
+        self.screen = screen  
+        # 加载飞船图像并获取其外接矩形  
+        self.image = pygame.image.load('images/ship.bmp')  
+        self.rect = self.image.get_rect()  
+        self.screen_rect = screen.get_rect()  
+  
+        # 将每搜新飞船放在屏幕底部中央  
+        self.rect.centerx = self.screen_rect.centerx  
+        self.rect.centery = self.screen_rect.centery  
+  
+    def biltme(self):  
+        self.screen.blit(self.image,self.rect)  
+复制代码
+ 
+
+run.py
+
+复制代码
+import sys  
+import pygame  
+from ship import Ship  
+def run():  
+    pygame.init()  
+    screen = pygame.display.set_mode((1200,600))  
+    pygame.display.set_caption("Blue Sky")  
+  
+    bg_color = (0,124,195)  
+    s = Ship(screen)  
+    while  True:  
+        screen.fill(bg_color)  
+        s.biltme()  
+        for event in pygame.event.get():  
+            if event.type == pygame.QUIT:  
+                sys.exit()  
+        pygame.display.flip()  
+run()  
+复制代码
+ 
+
+输出：
+
+
+
+ 
+
+ 文件夹截图
+
+
+
+ 
+
+ 12-3 火箭 ： 编写一个游戏， 开始时屏幕中央有一个火箭， 而玩家可使用四个方向键上下左右移动火箭。 请务必确保火箭不会移到屏幕外面。
+12-4 按键 ： 创建一个程序， 显示一个空屏幕。 在事件循环中， 每当检测到pygame. KEYDOWN 事件时都打印属性event. key 。 运行这个程序， 并按各种键， 看看
+Pygame如何响应
+
+
+12-3
+
+setting.py
+
+复制代码
+class Setting():  
+  
+    def __init__(self):  
+        """初始化游戏的设置"""  
+        #屏幕设置  
+        self.screen_width = 1200  
+        self.screen_height = 600  
+        self.bg_color = (255,255,255)  
+        self.ship_speed_factor = 1.5  
+复制代码
+ 
+
+rocket.py
+
+复制代码
+import pygame  
+class Rocket():  
+    """docstring for Rocket"""  
+    def __init__(self,ai_setting, screen):  
+        self.screen = screen  
+        self.image = pygame.image.load('images/ship.jpg')  
+        self.rect = self.image.get_rect()  
+        self.screen_rect = screen.get_rect()  
+        self.ai_setting = ai_setting  
+        self.rect.centerx = self.screen_rect.centerx  
+        self.rect.centery = self.screen_rect.centery  
+        self.center = float(self.rect.centerx)  
+        self.centery = float(self.rect.centery)  
+        self.moving_right = False  
+        self.moving_left = False  
+        self.moving_up = False  
+        self.moving_down = False  
+    def update(self):  
+        if self.moving_right and self.rect.right < self.screen_rect.right:  
+            self.center +=self.ai_setting.ship_speed_factor  
+        if self.moving_left and self.rect.left > 0:  
+            self.center -=self.ai_setting.ship_speed_factor  
+        if self.moving_up and self.rect.top > 0:  
+            self.centery -= self.ai_setting.ship_speed_factor  
+        if self.moving_down and self.rect.bottom < self.screen_rect.bottom:  
+            self.centery +=self.ai_setting.ship_speed_factor  
+        self.rect.centerx = self.center  
+        self.rect.centery = self.centery  
+    def blitme(self):  
+        self.screen.blit(self.image,self.rect)  
+复制代码
+ 
+
+run.py
+
+复制代码
+import sys  
+import pygame  
+from rocket import Rocket  
+from setting import Setting  
+import game_functions as gf  
+def run():  
+    pygame.init()  
+    ai_setting = Setting()  
+    screen =pygame.display.set_mode((ai_setting.screen_width,ai_setting.screen_height))  
+    pygame.display.set_caption("Rocket")  
+    r = Rocket(ai_setting,screen)  
+    while True:  
+        gf.check_events(r)  
+        r.update()  
+        gf.update_screen(ai_setting,screen,r)  
+run()  
+复制代码
+ 
+
+输出： 
+
+
+
+ 
+
+ （能动的飞机哦）
+
+ 12-4
+
+复制代码
+import sys  
+import pygame  
+def test():  
+    pygame.init()  
+    screen = pygame.display.set_mode((900,600))  
+    pygame.display.set_caption("12-4")  
+    bg_color = (255,255,255)  
+    while True:  
+        for event in pygame.event.get():  
+            if event.type == pygame.QUIT:  
+                sys.exit()  
+            elif event.type == pygame.KEYDOWN:  
+                if event.key == pygame.K_UP:  
+                    bg_color=(255,0,255)  
+                elif event.key == pygame.K_DOWN:  
+                    bg_color=(0,255,255)  
+                elif event.key == pygame.K_LEFT:  
+                    bg_color=(255,255,0)  
+                elif event.key == pygame.K_RIGHT:  
+                    bg_color = (0,0,255)  
+        screen.fill(bg_color)  
+        pygame.display.flip()  
+test()        
+复制代码
+ 
+
+输出：
+
+
+
+按四个方向键会有不同的输出结果，主要是背景颜色
+
+ https://blog.csdn.net/weixin_38855195/article/details/78539670
+
+ 
+
+ 
+
+12-5 侧面射击 ： 编写一个游戏， 将一艘飞船放在屏幕左边， 并允许玩家上下移动飞船。 在玩家按空格键时， 让飞船发射一颗在屏幕中向右穿行的子弹， 并在子弹离开
+屏幕而消失后将其删除。
+game_functions.py
+
+复制代码
+import sys  
+  
+import pygame  
+from bullet import Bullets  
+def check_keydown_events(event,ai_setting,screen,rocket,bullets):  
+    if event.key == pygame.K_UP:  
+        rocket.moving_up = True  
+    elif event.key == pygame.K_DOWN:  
+        rocket.moving_down = True  
+    elif event.key == pygame.K_SPACE:  
+        new_bullet = Bullets(ai_setting,screen,rocket)  
+        bullets.add(new_bullet)  
+def check_keyup_events(event,rocket):  
+    if event.key == pygame.K_UP:  
+        rocket.moving_up = False  
+    elif event.key == pygame.K_DOWN:  
+        rocket.moving_down = False  
+def check_events(ai_settings,screen,rocket,bullets):  
+    """响应按键和鼠标事件"""  
+    for event in pygame.event.get():  
+        if event.type == pygame.QUIT:  
+            print("Quit")  
+            sys.exit()  
+        elif event.type == pygame.KEYDOWN:  
+            check_keydown_events(event,ai_settings,screen,rocket,bullets)  
+        elif event.type == pygame.KEYUP:  
+            check_keyup_events(event,rocket)  
+def update_bullet(bullets):  
+    for bullet in bullets:  
+        if bullet.rect_left<=0:  
+            bullets.remove(bullet)  
+def update_screen(ai_settings,screen,rocket,bullets):  
+    screen.fill(ai_settings.bg_color)  
+    for bullet in bullets.sprites():  
+        bullet.draw_bullet()  
+    rocket.blitme()  
+    pygame.display.flip()  
+复制代码
+bullet.py
+
+复制代码
+import pygame
+from pygame.sprite import Sprite
+class Bullets(Sprite):
+    """docstring for Bullets"""
+    def __init__(self, ai_settings, screen, rocket):
+        super(Bullets, self).__init__()
+        self.screen = screen
+        self.rect = pygame.Rect(0, 0, ai_settings.bullet_width, ai_settings.bullet_height)
+        self.rect.centery = rocket.rect.centery
+        self.rect.right = rocket.rect.right
+        # 存储小数表示的子弹位置
+        self.x = float(self.rect.x)
+        self.color = ai_settings.bullet_color
+        self.speed_factor = ai_settings.bullet_speed_factor
+    def update(self):
+        self.x += self.speed_factor
+        self.rect.x = self.x
+    def draw_bullet(self):
+        pygame.draw.rect(self.screen, self.color, self.rect)
+复制代码
+ 
+
+ 
+
+setting.py
+
+复制代码
+class Setting():  
+  
+    def __init__(self):  
+        """初始化游戏的设置"""  
+        #屏幕设置  
+        self.screen_width = 1200  
+        self.screen_height = 600  
+        self.bg_color = (255,255,255)  
+        self.ship_speed_factor = 1.5  
+  
+        self.bullet_speed_factor = 1  
+        self.bullet_width = 15  
+        self.bullet_height = 3  
+        self.bullet_color =(60,60,60)  
+复制代码
+rocket.py
+
+复制代码
+import pygame
+class Rocket():
+    """docstring for Rocket"""
+    def __init__(self,ai_setting, screen):
+        self.screen = screen
+        self.image = pygame.image.load('images/rocket.bmp')
+        self.rect = self.image.get_rect()
+        self.screen_rect = screen.get_rect()
+        self.ai_setting = ai_setting
+        self.rect.x = 0
+        self.rect.centery = self.screen_rect.centery
+        self.center = float(self.rect.centerx)
+        self.centery = float(self.rect.centery)
+        self.moving_up = False
+        self.moving_down = False
+    def update(self):
+        if self.moving_up and self.rect.top > 0:
+            self.centery -= self.ai_setting.ship_speed_factor
+        if self.moving_down and self.rect.bottom < self.screen_rect.bottom:
+            self.centery +=self.ai_setting.ship_speed_factor
+        self.rect.centery = self.centery
+    def blitme(self):
+        self.screen.blit(self.image,self.rect)
+复制代码
+run.py
+
+复制代码
+import sys
+import pygame
+from rocket import Rocket
+from setting import Setting
+from pygame.sprite import Group
+import game_functions as gf
+def run():
+    pygame.init()
+    ai_setting = Setting()
+    screen =pygame.display.set_mode((ai_setting.screen_width,ai_setting.screen_height))
+    pygame.display.set_caption("Rocket")
+    r = Rocket(ai_setting,screen)
+    bullets = Group()
+    while True:
+        gf.check_events(ai_setting,screen,r,bullets)
+        r.update()
+        bullets.update()
+        gf.update_screen(ai_setting,screen,r,bullets)
+run()
